@@ -10,12 +10,18 @@ import datetime
 import time
 import tkinter.ttk as ttk
 import tkinter.font as font
+from PyQt5 import QtGui    # or PySide
 
 
 window = tk.Tk()
+
+
 #helv36 = tk.Font(family='Helvetica', size=36, weight='bold')
 window.title("Hệ thống nhận diện khuôn mặt")
-window.minsize(1260,750)
+# window.minsize(1260,750)
+window.geometry('1260x750')
+# window.eval('tk::PlaceWindow . center')
+
 
 dialog_title = 'Thoát'
 dialog_text = 'Bạn muốn thoát?'
@@ -109,7 +115,7 @@ def TakeImages():
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-            elif sampleNum>10: #luu anh cho den khi dc 10 anh
+            elif sampleNum>100: #luu anh cho den khi dc 100 anh
                 break
         cam.release()
         cv2.destroyAllWindows()
@@ -178,17 +184,13 @@ def TrackImages():
             cv2.rectangle(im,(x,y),(x+w,y+h),(0,225,0),2)
             Id, conf = recognizer.predict(gray[y:y+h,x:x+w])
             if(conf != None):
-                # print("ok")
+                print("ok")
                 ts = time.time()
                 date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
                 timeStamp = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
                 aa=df.loc[df['Id'] == Id]['Name'].values
                 tt=str(Id) +"-"+aa
-                # aa= "DogSang"
                 attendance.loc[len(attendance)] = [Id,aa,date,timeStamp]
-                #h = attendance.loc[['Id']]
-                # print(attendance)
-
             else:
                 Id='Unknown'
                 tt=str(Id)
